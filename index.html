@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voltage Amprem Client</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 520px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 30px 25px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+      transition: 0.3s;
+    }
+    h2 {
+      margin-bottom: 24px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #111;
+    }
+    .step-badge {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .view {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .view.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+      background: #fafafa;
+    }
+    input:focus {
+      border-color: #3b82f6;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #3b82f6;
+      color: #fff;
+      transition: 0.2s;
+      margin-top: 4px;
+    }
+    .btn:hover {
+      background: #2563eb;
+      transform: scale(0.98);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #1f2937;
+    }
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+    .inline-group {
+      display: flex;
+      gap: 10px;
+    }
+    .inline-group .btn {
+      width: auto;
+      padding: 12px 20px;
+    }
+    .inline-group input {
+      flex: 1;
+    }
+    .response-box {
+      margin-top: 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .response-box pre {
+      margin: 0;
+      font-size: 13px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #0f172a;
+    }
+    .response-box .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .msg-success {
+      color: #16a34a;
+      font-weight: 500;
+    }
+    .msg-error {
+      color: #dc2626;
+      font-weight: 500;
+    }
+    .code-highlight {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .badge-premium {
+      background: #fef3c7;
+      color: #b45309;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .mt-2 {
+      margin-top: 12px;
+    }
+    .mt-4 {
+      margin-top: 24px;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .flex-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="step-badge">⚡ Voltage Coder — X</div>
+  <h2 id="pageTitle">🔐 Authentication</h2>
+
+  <!-- ===== VIEW 1: LOGIN / REGISTER ===== -->
+  <div id="view-auth" class="view active">
+    <p style="color:#6b7280; margin-bottom:20px;">Login atau Register dengan email acak. Turnstile otomatis terkirim.</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="authEmail" placeholder="contoh@random.com" value="mamad@yahoo.com" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="authPassword" placeholder="******" value="123456" />
+    </div>
+    <div class="inline-group">
+      <button class="btn btn-secondary" id="btnLogin">Login</button>
+      <button class="btn" id="btnRegister">Register</button>
+    </div>
+    <div id="authResponse" class="response-box mt-2 hidden">
+      <div class="label">📋 Response Asli Server</div>
+      <pre id="authResponseText">-</pre>
+    </div>
+  </div>
+
+  <!-- ===== VIEW 2: DASHBOARD (SEND MAGIC LINK) ===== -->
+  <div id="view-dashboard" class="view">
+    <div id="userInfo" class="badge-premium">✅ Logged in as: <span id="userEmailDisplay">-</span></div>
+    <p style="color:#4b5563; font-size:14px;">Kirim Magic Link ke email spesifik untuk aktivasi premium otomatis.</p>
+    <div class="form-group mt-2">
+      <label>Email Tujuan (Magic Link)</label>
+      <input type="email" id="magicEmail" placeholder="yalihe5350@acoxs.com" value="yalihe5350@acoxs.com" />
+    </div>
+    <button class="btn" id="btnSendMagic">📨 Send Magic Link</button>
+
+    <div id="magicResponse" class="response-box mt-2 hidden">
+      <div class="label">📋 Response Asli Server</div>
+      <pre id="magicResponseText">-</pre>
+    </div>
+
+    <div id="verifySection" class="hidden mt-4">
+      <hr style="border:0; border-top:1px solid #e5e7eb; margin:16px 0;" />
+      <h3 style="font-size:18px;">🔑 Verifikasi Magic Link</h3>
+      <p style="font-size:14px; color:#6b7280;">Masukkan <b>Code</b> yang didapat dari response di atas.</p>
+      <div class="form-group">
+        <label>Email (sama seperti di atas)</label>
+        <input type="email" id="verifyEmail" />
+      </div>
+      <div class="form-group">
+        <label>Kode Magic Link</label>
+        <input type="text" id="verifyCode" placeholder="cth: xxxxxxxx-xxxx-xxxx" />
+      </div>
+      <button class="btn" id="btnVerify">✅ Verifikasi & Aktifkan Premium</button>
+      <div id="verifyResponse" class="response-box mt-2 hidden">
+        <div class="label">📋 Response Asli Server</div>
+        <pre id="verifyResponseText">-</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VIEW 3: SUCCESS ===== -->
+  <div id="view-success" class="view text-center">
+    <div style="font-size:48px; margin-bottom:12px;">🎉</div>
+    <h2 style="color:#16a34a;">Premium Aktif!</h2>
+    <p id="successMsg" style="color:#374151; margin-bottom:16px;"></p>
+    <div class="response-box">
+      <div class="label">📋 Final Response Asli Server</div>
+      <pre id="successResponseText">-</pre>
+    </div>
+    <button class="btn btn-secondary mt-4" id="btnReset">🔄 Kembali ke Awal</button>
+  </div>
+
+</div>
+
+<script>
+  // ─── CONFIG ────────────────────────────────────────────────
+  // Ubah BASE_URL jika frontend dipisah dari backend.
+  // Jika deploy bareng di Vercel (root + api/), biarkan kosong.
+  const API_BASE = 'https://api-am-five.vercel.app'; 
+
+  // ─── DOM REFS ──────────────────────────────────────────────
+  const views = {
+    auth: document.getElementById('view-auth'),
+    dashboard: document.getElementById('view-dashboard'),
+    success: document.getElementById('view-success')
+  };
+  const pageTitle = document.getElementById('pageTitle');
+
+  const authEmail = document.getElementById('authEmail');
+  const authPass = document.getElementById('authPassword');
+  const btnLogin = document.getElementById('btnLogin');
+  const btnRegister = document.getElementById('btnRegister');
+  const authResp = document.getElementById('authResponse');
+  const authRespText = document.getElementById('authResponseText');
+
+  const userEmailDisplay = document.getElementById('userEmailDisplay');
+  const magicEmail = document.getElementById('magicEmail');
+  const btnSendMagic = document.getElementById('btnSendMagic');
+  const magicResp = document.getElementById('magicResponse');
+  const magicRespText = document.getElementById('magicResponseText');
+  const verifySection = document.getElementById('verifySection');
+  const verifyEmail = document.getElementById('verifyEmail');
+  const verifyCode = document.getElementById('verifyCode');
+  const btnVerify = document.getElementById('btnVerify');
+  const verifyResp = document.getElementById('verifyResponse');
+  const verifyRespText = document.getElementById('verifyResponseText');
+
+  const successMsg = document.getElementById('successMsg');
+  const successRespText = document.getElementById('successResponseText');
+  const btnReset = document.getElementById('btnReset');
+
+  let currentUser = null;
+  let lastMagicCode = null;
+  let lastMagicEmail = null;
+
+  // ─── HELPERS ──────────────────────────────────────────────
+  function showView(id) {
+    Object.keys(views).forEach(key => views[key].classList.remove('active'));
+    views[id].classList.add('active');
+    if (id === 'auth') pageTitle.textContent = '🔐 Authentication';
+    else if (id === 'dashboard') pageTitle.textContent = '📦 Dashboard';
+    else if (id === 'success') pageTitle.textContent = '✅ Success';
+  }
+
+  function setLoading(btn, state) {
+    btn.disabled = state;
+    btn.textContent = state ? 'Processing...' : btn.getAttribute('data-original') || btn.textContent;
+  }
+
+  async function apiCall(endpoint, body) {
+    const url = `${API_BASE}${endpoint}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  }
+
+  // ─── AUTH: LOGIN / REGISTER ──────────────────────────────
+  async function handleAuth(type) {
+    const email = authEmail.value.trim();
+    const pass = authPass.value.trim();
+    if (!email || !pass) return alert('Email & password wajib diisi.');
+
+    const btn = type === 'register' ? btnRegister : btnLogin;
+    const original = btn.textContent;
+    btn.setAttribute('data-original', original);
+    setLoading(btn, true);
+    authResp.classList.add('hidden');
+
+    try {
+      const endpoint = type === 'register' ? '/api/auth/register' : '/api/auth/login';
+      // Turnstile otomatis dikirim
+      const data = await apiCall(endpoint, {
+        email,
+        password: pass,
+        turnstileToken: 'auto-verified'
+      });
+
+      // Tampilkan response asli
+      authResp.classList.remove('hidden');
+      authRespText.textContent = JSON.stringify(data, null, 2);
+
+      if (data.success && data.user) {
+        currentUser = data.user;
+        userEmailDisplay.textContent = data.user.email;
+        showView('dashboard');
+        // Reset verify form dengan email tujuan
+        verifyEmail.value = magicEmail.value.trim() || data.user.email;
+        authResp.classList.add('hidden'); // cleanup
+      } else {
+        // Tampilkan error dari server
+        authRespText.style.color = '#dc2626';
+      }
+    } catch (err) {
+      authResp.classList.remove('hidden');
+      authRespText.textContent = 'Network Error: ' + err.message;
+      authRespText.style.color = '#dc2626';
+    } finally {
+      setLoading(btn, false);
+    }
+  }
+
+  btnRegister.addEventListener('click', () => handleAuth('register'));
+  btnLogin.addEventListener('click', () => handleAuth('login'));
+
+  // ─── MAGIC LINK: SEND ─────────────────────────────────────
+  btnSendMagic.addEventListener('click', async () => {
+    const email = magicEmail.value.trim();
+    if (!email) return alert('Email tujuan wajib diisi.');
+    if (!currentUser) {
+      alert('Silakan login/register terlebih dahulu.');
+      showView('auth');
+      return;
+    }
+
+    const original = btnSendMagic.textContent;
+    btnSendMagic.setAttribute('data-original', original);
+    setLoading(btnSendMagic, true);
+    magicResp.classList.add('hidden');
+    verifySection.classList.add('hidden');
+
+    try {
+      const data = await apiCall('/api/send-magic-link', { email });
+      magicResp.classList.remove('hidden');
+      magicRespText.textContent = JSON.stringify(data, null, 2);
+
+      if (data.success && data.code) {
+        lastMagicCode = data.code;
+        lastMagicEmail = email;
+        // Auto-fill verify form
+        verifyEmail.value = email;
+        verifyCode.value = data.code;
+        verifySection.classList.remove('hidden');
+        magicRespText.style.color = '#0f172a';
+      } else {
+        magicRespText.style.color = '#dc2626';
+      }
+    } catch (err) {
+      magicResp.classList.remove('hidden');
+      magicRespText.textContent = 'Network Error: ' + err.message;
+      magicRespText.style.color = '#dc2626';
+    } finally {
+      setLoading(btnSendMagic, false);
+    }
+  });
+
+  // ─── MAGIC LINK: VERIFY ──────────────────────────────────
+  btnVerify.addEventListener('click', async () => {
+    const email = verifyEmail.value.trim();
+    const code = verifyCode.value.trim();
+    if (!email || !code) return alert('Email dan Code wajib diisi.');
+
+    const original = btnVerify.textContent;
+    btnVerify.setAttribute('data-original', original);
+    setLoading(btnVerify, true);
+    verifyResp.classList.add('hidden');
+
+    try {
+      const data = await apiCall('/api/verify-magic-link', { email, code });
+      verifyResp.classList.remove('hidden');
+      verifyRespText.textContent = JSON.stringify(data, null, 2);
+
+      if (data.success) {
+        // Tampilkan halaman sukses
+        successMsg.textContent = data.message || 'Premium activated!';
+        successRespText.textContent = JSON.stringify(data, null, 2);
+        showView('success');
+        verifyRespText.style.color = '#0f172a';
+      } else {
+        verifyRespText.style.color = '#dc2626';
+      }
+    } catch (err) {
+      verifyResp.classList.remove('hidden');
+      verifyRespText.textContent = 'Network Error: ' + err.message;
+      verifyRespText.style.color = '#dc2626';
+    } finally {
+      setLoading(btnVerify, false);
+    }
+  });
+
+  // ─── RESET ─────────────────────────────────────────────────
+  btnReset.addEventListener('click', () => {
+    currentUser = null;
+    lastMagicCode = null;
+    lastMagicEmail = null;
+    authResp.classList.add('hidden');
+    magicResp.classList.add('hidden');
+    verifyResp.classList.add('hidden');
+    verifySection.classList.add('hidden');
+    showView('auth');
+  });
+
+  // ─── INIT ──────────────────────────────────────────────────
+  // Default values
+  verifyEmail.value = magicEmail.value;
+  showView('auth');
+  console.log('⚡ Voltage Frontend ready.');
+</script>
+
+</body>
+</html>
