@@ -1,0 +1,16 @@
+{
+  "name": "amprem-api-clone",
+  "version": "1.0.0",
+  "description": "Complete backend clone for amprem.irfanjawa.com",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "uuid": "^9.0.0"
+  }
+}
