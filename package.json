@@ -1,9 +1,15 @@
 {
-  "name": "amprem-simple",
-  "version": "1.0.0",
-  "type": "module",
+  "name": "am-generator-serverless",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node api/index.js"
+  },
   "dependencies": {
-    "jsonwebtoken": "^9.0.2",
-    "uuid": "^9.0.1"
+    "@sparticuz/chromium": "^131.0.0",
+    "puppeteer-core": "^23.1.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "nodemailer": "^6.9.16"
   }
 }
